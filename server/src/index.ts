@@ -35,7 +35,7 @@ app.use("/api/v1/otp", otpRouter);
 
 // Serve React frontend in production
 if (process.env.NODE_ENV === "production") {
-  const clientBuildPath = join(process.cwd(), "../client/build");
+  const clientBuildPath = join(__dirname, "../../client/build");
   app.use(express.static(clientBuildPath));
 
   // Redirect all unknown routes to React
