@@ -36,7 +36,7 @@ router.post("/providers/:id/reject", verifyJwt, requireRole("admin"), async (req
 });
 
 // Admin: list unverified
-router.get("/providers/pending", verifyJwt, requireRole("admin"), async (_req, res) => {
+router.get("/providers/pending", verifyJwt, requireRole("admin"), async (req: Request, res: Response) => {
 	try {
 		const docs = await ProviderModel.find({ verified: false })
 			.populate('userId', 'name email')
