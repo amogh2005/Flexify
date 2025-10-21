@@ -1,0 +1,16 @@
+.form-container{
+    max-width: 900px;
+    padding-top: 80px;
+    margin: auto;
+    border: 2px solid #e2e8f0 !important;
+    padding: 30px;
+    border-radius: 1rem;
+    margin-top: 60px;
+    box-shadow: 0 8px 32px rgba(102, 126, 234, 0.15), 0 4px 16px rgba(118, 75, 162, 0.1);
+}
+.form-title{
+    padding-bottom: 10px;
+}
+.form-footer{
+    padding-top: 30px;
+}

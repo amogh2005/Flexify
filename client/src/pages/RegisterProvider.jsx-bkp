@@ -1,0 +1,188 @@
+// Simplified 3-step registration for entry-level
+const [formData, setFormData] = useState({
+  // Step 1: Basic Info (Essential)
+  name: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  phone: '',
+  category: '',
+  description: '',
+  
+  // Step 2: Location & Pricing (Critical for local services)
+  address: '',
+  city: '',
+  pincode: '',
+  workingAreas: [], // Areas they will serve
+  hourlyRate: '',
+  serviceRadius: 5, // km
+  
+  // Step 3: Availability & Verification (Basic)
+  availability: {
+    monday: { available: true, hours: '9AM-6PM' },
+    tuesday: { available: true, hours: '9AM-6PM' },
+    wednesday: { available: true, hours: '9AM-6PM' },
+    thursday: { available: true, hours: '9AM-6PM' },
+    friday: { available: true, hours: '9AM-6PM' },
+    saturday: { available: true, hours: '9AM-6PM' },
+    sunday: { available: false, hours: '' }
+  },
+  idDocument: null, // Just basic ID verification
+  agreeToTerms: false,
+  
+  // Optional (can be added later via profile)
+  portfolio: [],
+  bankDetails: { accountNumber: '', ifscCode: '', upiId: '' },
+  languages: ['English', 'Hindi'] // Default common languages
+})
+
+// Simplified steps
+const totalSteps = 3 // Instead of 6
+
+const renderSteps = () => {
+  switch (currentStep) {
+    case 1: return renderBasicInfo()
+    case 2: return renderLocationAndPricing()
+    case 3: return renderAvailabilityAndVerification()
+    default: return renderBasicInfo()
+  }
+}
+
+// New step: Location & Pricing
+const renderLocationAndPricing = () => (
+  <div className="registration-step">
+    <h2>Location & Service Details</h2>
+    <p>Where do you provide services and at what rates?</p>
+    
+    <div className="form-row">
+      <div className="form-group">
+        <label className="form-label">Full Address</label>
+        <textarea
+          className="form-input"
+          placeholder="Enter your complete address"
+          value={formData.address}
+          onChange={e => updateFormData('address', e.target.value)}
+          required
+        />
+      </div>
+    </div>
+    
+    <div className="form-row">
+      <div className="form-group">
+        <label className="form-label">City</label>
+        <input
+          type="text"
+          className="form-input"
+          placeholder="Your city"
+          value={formData.city}
+          onChange={e => updateFormData('city', e.target.value)}
+          required
+        />
+      </div>
+      
+      <div className="form-group">
+        <label className="form-label">Pincode</label>
+        <input
+          type="text"
+          className="form-input"
+          placeholder="Area pincode"
+          value={formData.pincode}
+          onChange={e => updateFormData('pincode', e.target.value)}
+          required
+        />
+      </div>
+    </div>
+    
+    <div className="form-group">
+      <label className="form-label">Service Rate (₹/hour)</label>
+      <input
+        type="number"
+        className="form-input"
+        placeholder="Your hourly rate"
+        value={formData.hourlyRate}
+        onChange={e => updateFormData('hourlyRate', e.target.value)}
+        required
+      />
+    </div>
+    
+    <div className="form-group">
+      <label className="form-label">Service Area</label>
+      <div className="radius-selector">
+        <input
+          type="range"
+          min="1"
+          max="20"
+          value={formData.serviceRadius}
+          onChange={e => updateFormData('serviceRadius', parseInt(e.target.value))}
+        />
+        <span>Within {formData.serviceRadius} km from your location</span>
+      </div>
+    </div>
+  </div>
+)
+
+// Simplified availability
+const renderAvailabilityAndVerification = () => (
+  <div className="registration-step">
+    <h2>Availability & Verification</h2>
+    <p>When are you available and basic verification</p>
+    
+    <div className="form-group">
+      <label className="form-label">Working Days</label>
+      <div className="simple-availability">
+        {Object.entries(formData.availability).map(([day, data]) => (
+          <div key={day} className="day-option">
+            <label>
+              <input
+                type="checkbox"
+                checked={data.available}
+                onChange={e => updateNestedFormData('availability', day, {
+                  ...data,
+                  available: e.target.checked
+                })}
+              />
+              {day.charAt(0).toUpperCase() + day.slice(1)}
+            </label>
+            {data.available && (
+              <select
+                value={data.hours}
+                onChange={e => updateNestedFormData('availability', day, {
+                  ...data,
+                  hours: e.target.value
+                })}
+              >
+                <option value="9AM-6PM">9 AM - 6 PM</option>
+                <option value="8AM-8PM">8 AM - 8 PM</option>
+                <option value="10AM-4PM">10 AM - 4 PM</option>
+                <option value="flexible">Flexible Hours</option>
+              </select>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+    
+    <div className="form-group">
+      <label className="form-label">ID Verification</label>
+      <input
+        type="file"
+        accept=".pdf,.jpg,.jpeg,.png"
+        onChange={e => updateFormData('idDocument', e.target.files[0])}
+        required
+      />
+      <p className="form-help">Upload Aadhar, PAN, or Driving License</p>
+    </div>
+    
+    <div className="form-group">
+      <label className="checkbox-option">
+        <input
+          type="checkbox"
+          checked={formData.agreeToTerms}
+          onChange={e => updateFormData('agreeToTerms', e.target.checked)}
+          required
+        />
+        I agree to the Terms & Conditions and Privacy Policy
+      </label>
+    </div>
+  </div>
+)
