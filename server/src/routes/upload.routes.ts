@@ -3,6 +3,7 @@ import multer from "multer";
 import { verifyJwt, requireRole } from "../middleware/auth";
 import { uploadBufferToS3 } from "../services/storage";
 import { ProviderModel } from "../models/Provider";
+import { Request, Response } from 'express';
 
 const router = Router();
 const upload = multer();
@@ -11,7 +12,7 @@ const upload = multer();
 router.post(
 	"/document",
 	upload.single("file"),
-	async (req, res) => {
+	async (req: Request, res: Response) => {
 		if (!req.file) return res.status(400).json({ error: "Missing file" });
 		
 		// Validate file type
@@ -48,7 +49,7 @@ router.post(
 	verifyJwt,
 	requireRole("provider"),
 	upload.single("file"),
-	async (req, res) => {
+	async (req: Request, res: Response) => {
 		if (!req.file) return res.status(400).json({ error: "Missing file" });
 		try {
 			const url = await uploadBufferToS3(req.file.buffer, req.file.mimetype);

@@ -5,11 +5,12 @@ import { ProviderModel } from "../models/Provider";
 import { UserModel } from "../models/User";
 import { notifyNewBooking, notifyBookingStatusChange } from "../services/notifications";
 import { z } from "zod";
+import { Request, Response } from 'express';
 
 const router = Router();
 
 // Create new booking with worker selection
-router.post("/create", verifyJwt, requireRole("user"), async (req, res) => {
+router.post("/create", verifyJwt, requireRole("user"), async (req: Request, res: Response) => {
 	try {
 		const bookingSchema = z.object({
 			workerId: z.string().min(1),
@@ -131,7 +132,7 @@ router.post("/create", verifyJwt, requireRole("user"), async (req, res) => {
 });
 
 // Create new booking (legacy endpoint)
-router.post("/", verifyJwt, requireRole("user"), async (req, res) => {
+router.post("/", verifyJwt, requireRole("user"), async (req: Request, res: Response) => {
 	try {
 		const bookingSchema = z.object({
 			providerId: z.string().min(1),
@@ -221,7 +222,7 @@ router.post("/", verifyJwt, requireRole("user"), async (req, res) => {
 });
 
 // Get user's bookings
-router.get("/me", verifyJwt, requireRole("user"), async (req, res) => {
+router.get("/me", verifyJwt, requireRole("user"), async (req: Request, res: Response) => {
 	try {
 		const { status, limit = 100 } = req.query;
 		
@@ -243,7 +244,7 @@ router.get("/me", verifyJwt, requireRole("user"), async (req, res) => {
 });
 
 // Get provider's bookings
-router.get("/provider/me", verifyJwt, requireRole("provider"), async (req, res) => {
+router.get("/provider/me", verifyJwt, requireRole("provider"), async (req: Request, res: Response) => {
   try {
     const provider = await ProviderModel.findOne({ userId: req.user!.userId });
     if (!provider) {
@@ -268,7 +269,7 @@ router.get("/provider/me", verifyJwt, requireRole("provider"), async (req, res) 
 });
 
 // Provider accepts booking
-router.patch("/:id/accept", verifyJwt, requireRole("provider"), async (req, res) => {
+router.patch("/:id/accept", verifyJwt, requireRole("provider"), async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { providerNotes, estimatedDuration, finalAmount } = req.body;
@@ -326,7 +327,7 @@ router.patch("/:id/accept", verifyJwt, requireRole("provider"), async (req, res)
 });
 
 // Provider rejects booking
-router.patch("/:id/reject", verifyJwt, requireRole("provider"), async (req, res) => {
+router.patch("/:id/reject", verifyJwt, requireRole("provider"), async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { rejectionReason } = req.body;
@@ -379,7 +380,7 @@ router.patch("/:id/reject", verifyJwt, requireRole("provider"), async (req, res)
 });
 
 // Provider starts work
-router.patch("/:id/start", verifyJwt, requireRole("provider"), async (req, res) => {
+router.patch("/:id/start", verifyJwt, requireRole("provider"), async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 
@@ -433,7 +434,7 @@ router.patch("/:id/start", verifyJwt, requireRole("provider"), async (req, res) 
 });
 
 // Provider completes work
-router.patch("/:id/complete", verifyJwt, requireRole("provider"), async (req, res) => {
+router.patch("/:id/complete", verifyJwt, requireRole("provider"), async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { finalAmount } = req.body;
@@ -498,7 +499,7 @@ router.patch("/:id/complete", verifyJwt, requireRole("provider"), async (req, re
 });
 
 // User rates and reviews completed booking
-router.patch("/:id/review", verifyJwt, requireRole("user"), async (req, res) => {
+router.patch("/:id/review", verifyJwt, requireRole("user"), async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { rating, review } = req.body;
@@ -552,7 +553,7 @@ router.patch("/:id/review", verifyJwt, requireRole("user"), async (req, res) => 
 });
 
 // Cancel booking (user only, before accepted)
-router.patch("/:id/cancel", verifyJwt, requireRole("user"), async (req, res) => {
+router.patch("/:id/cancel", verifyJwt, requireRole("user"), async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 
@@ -586,7 +587,7 @@ router.patch("/:id/cancel", verifyJwt, requireRole("user"), async (req, res) => 
 });
 
 // Get single booking details
-router.get("/:id", verifyJwt, async (req, res) => {
+router.get("/:id", verifyJwt, async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { role, userId } = req.user!;

@@ -4,11 +4,12 @@ import { verifyJwt, requireRole } from "../middleware/auth";
 import { OtpTokenModel } from "../models/OtpToken";
 import { ProviderModel } from "../models/Provider";
 import { sendSms, sendEmail } from "../services/notifications";
+import { Request, Response } from 'express';
 
 const router = Router();
 
 const RequestSchema = z.object({ phone: z.string().min(8) });
-router.post("/request", verifyJwt, requireRole("provider"), async (req, res) => {
+router.post("/request", verifyJwt, requireRole("provider"), async (req: Request, res: Response) => {
   const parsed = RequestSchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { phone } = parsed.data;
@@ -20,7 +21,7 @@ router.post("/request", verifyJwt, requireRole("provider"), async (req, res) => 
 });
 
 const VerifySchema = z.object({ phone: z.string().min(8), code: z.string().length(6) });
-router.post("/verify", verifyJwt, requireRole("provider"), async (req, res) => {
+router.post("/verify", verifyJwt, requireRole("provider"), async (req: Request, res: Response) => {
   const parsed = VerifySchema.safeParse(req.body);
   if (!parsed.success) return res.status(400).json({ error: parsed.error.flatten() });
   const { phone, code } = parsed.data;

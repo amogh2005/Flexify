@@ -2,6 +2,7 @@ import { Router } from "express";
 import { ProviderModel } from "../models/Provider";
 import { verifyJwt } from "../middleware/auth";
 import mongoose from "mongoose";
+import { Request, Response } from 'express';
 
 const router = Router();
 
@@ -15,7 +16,7 @@ function checkAuth(req: any, res: any) {
 }
 
 // Get all providers (for admin/customer search)
-router.get("/", async (req, res) => {
+router.get("/", async (req: Request, res: Response) => {
   try {
     const { 
       category, 
@@ -64,7 +65,7 @@ router.get("/", async (req, res) => {
 // NOTE: Place literal routes like "/me" BEFORE param routes like "/:id"
 
 // Get provider profile (authenticated) - Alias for /me
-router.get("/me", verifyJwt, async (req, res) => {
+router.get("/me", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -135,7 +136,7 @@ router.get("/me", verifyJwt, async (req, res) => {
 });
 
 // Get provider by ID (place after literal routes)
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: Request, res: Response) => {
   try {
     const provider = await ProviderModel.findById(req.params.id)
       .populate('userId', 'name email');
@@ -152,7 +153,7 @@ router.get("/:id", async (req, res) => {
 });
 
 // Get provider profile (authenticated) - Original endpoint
-router.get("/profile/me", verifyJwt, async (req, res) => {
+router.get("/profile/me", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -172,7 +173,7 @@ router.get("/profile/me", verifyJwt, async (req, res) => {
 });
 
 // Update provider profile
-router.put("/profile/me", verifyJwt, async (req, res) => {
+router.put("/profile/me", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -219,7 +220,7 @@ router.put("/profile/me", verifyJwt, async (req, res) => {
 });
 
 // Update availability
-router.put("/availability", verifyJwt, async (req, res) => {
+router.put("/availability", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -248,7 +249,7 @@ router.put("/availability", verifyJwt, async (req, res) => {
 });
 
 // Add portfolio item
-router.post("/portfolio", verifyJwt, async (req, res) => {
+router.post("/portfolio", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -297,7 +298,7 @@ router.post("/portfolio", verifyJwt, async (req, res) => {
 });
 
 // Remove portfolio item
-router.delete("/portfolio/:index", verifyJwt, async (req, res) => {
+router.delete("/portfolio/:index", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -338,7 +339,7 @@ router.delete("/portfolio/:index", verifyJwt, async (req, res) => {
 });
 
 // Add certification
-router.post("/certifications", verifyJwt, async (req, res) => {
+router.post("/certifications", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -389,7 +390,7 @@ router.post("/certifications", verifyJwt, async (req, res) => {
 });
 
 // Remove certification
-router.delete("/certifications/:index", verifyJwt, async (req, res) => {
+router.delete("/certifications/:index", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -430,7 +431,7 @@ router.delete("/certifications/:index", verifyJwt, async (req, res) => {
 });
 
 // Update earnings (called after successful booking completion)
-router.put("/earnings", verifyJwt, async (req, res) => {
+router.put("/earnings", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -461,7 +462,7 @@ router.put("/earnings", verifyJwt, async (req, res) => {
 });
 
 // Get earnings dashboard
-router.get("/earnings/dashboard", verifyJwt, async (req, res) => {
+router.get("/earnings/dashboard", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -491,7 +492,7 @@ router.get("/earnings/dashboard", verifyJwt, async (req, res) => {
 });
 
 // Create support ticket
-router.post("/support", verifyJwt, async (req, res) => {
+router.post("/support", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -529,7 +530,7 @@ router.post("/support", verifyJwt, async (req, res) => {
 });
 
 // Get support tickets
-router.get("/support", verifyJwt, async (req, res) => {
+router.get("/support", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -549,7 +550,7 @@ router.get("/support", verifyJwt, async (req, res) => {
 });
 
 // Update support ticket status
-router.put("/support/:ticketId", verifyJwt, async (req, res) => {
+router.put("/support/:ticketId", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -584,7 +585,7 @@ router.put("/support/:ticketId", verifyJwt, async (req, res) => {
 });
 
 // Get performance metrics
-router.get("/performance", verifyJwt, async (req, res) => {
+router.get("/performance", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -618,7 +619,7 @@ router.get("/performance", verifyJwt, async (req, res) => {
 });
 
 // Update location
-router.put("/location", verifyJwt, async (req, res) => {
+router.put("/location", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -671,7 +672,7 @@ router.put("/location", verifyJwt, async (req, res) => {
 });
 
 // Get current location
-router.get("/location", verifyJwt, async (req, res) => {
+router.get("/location", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -695,7 +696,7 @@ router.get("/location", verifyJwt, async (req, res) => {
 });
 
 // Update service radius
-router.put("/service-radius", verifyJwt, async (req, res) => {
+router.put("/service-radius", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -727,7 +728,7 @@ router.put("/service-radius", verifyJwt, async (req, res) => {
 });
 
 // Search providers by location (for customers)
-router.get("/search/nearby", async (req, res) => {
+router.get("/search/nearby", async (req: Request, res: Response) => {
   try {
     const { longitude, latitude, maxDistance = 50, category } = req.query;
 
@@ -763,7 +764,7 @@ router.get("/search/nearby", async (req, res) => {
 });
 
 // Admin: Update verification status
-router.put("/:id/verify", verifyJwt, async (req, res) => {
+router.put("/:id/verify", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -797,7 +798,7 @@ router.put("/:id/verify", verifyJwt, async (req, res) => {
 });
 
 // Admin: Get verification queue
-router.get("/admin/verification-queue", verifyJwt, async (req, res) => {
+router.get("/admin/verification-queue", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });

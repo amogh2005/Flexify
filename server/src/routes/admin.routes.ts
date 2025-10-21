@@ -3,11 +3,13 @@ import { verifyJwt, requireRole } from "../middleware/auth";
 import { ProviderModel } from "../models/Provider";
 import { UserModel } from "../models/User";
 import { BookingModel } from "../models/Booking";
+import { Request, Response } from 'express';
+
 
 const router = Router();
 
 // Admin: verify provider
-router.post("/providers/:id/verify", verifyJwt, requireRole("admin"), async (req, res) => {
+router.post("/providers/:id/verify", verifyJwt, requireRole("admin"), async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const doc = await ProviderModel.findByIdAndUpdate(id, { verified: true }, { new: true });
 	if (!doc) return res.status(404).json({ error: "Not found" });
@@ -15,7 +17,7 @@ router.post("/providers/:id/verify", verifyJwt, requireRole("admin"), async (req
 });
 
 // Admin: reject provider
-router.post("/providers/:id/reject", verifyJwt, requireRole("admin"), async (req, res) => {
+router.post("/providers/:id/reject", verifyJwt, requireRole("admin"), async (req: Request, res: Response) => {
 	const { id } = req.params;
 	const { reason } = req.body;
 	
@@ -48,7 +50,7 @@ router.get("/providers/pending", verifyJwt, requireRole("admin"), async (_req, r
 });
 
 // Admin: list all providers
-router.get("/providers", verifyJwt, requireRole("admin"), async (req, res) => {
+router.get("/providers", verifyJwt, requireRole("admin"), async (req: Request, res: Response) => {
 	try {
 		const { verified, category, limit = 200 } = req.query;
 		
@@ -69,7 +71,7 @@ router.get("/providers", verifyJwt, requireRole("admin"), async (req, res) => {
 });
 
 // Admin: list all users
-router.get("/users", verifyJwt, requireRole("admin"), async (req, res) => {
+router.get("/users", verifyJwt, requireRole("admin"), async (req: Request, res: Response) => {
 	try {
 		const { role, blocked, limit = 200 } = req.query;
 		
@@ -90,7 +92,7 @@ router.get("/users", verifyJwt, requireRole("admin"), async (req, res) => {
 });
 
 // Admin: update user (block/unblock)
-router.patch("/users/:id", verifyJwt, requireRole("admin"), async (req, res) => {
+router.patch("/users/:id", verifyJwt, requireRole("admin"), async (req: Request, res: Response) => {
 	try {
 		const { id } = req.params;
 		const { blocked } = req.body;
@@ -110,7 +112,7 @@ router.patch("/users/:id", verifyJwt, requireRole("admin"), async (req, res) => 
 });
 
 // Admin: list all bookings
-router.get("/bookings", verifyJwt, requireRole("admin"), async (req, res) => {
+router.get("/bookings", verifyJwt, requireRole("admin"), async (req: Request, res: Response) => {
 	try {
 		const { status, limit = 200 } = req.query;
 		

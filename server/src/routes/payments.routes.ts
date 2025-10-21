@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { ProviderModel } from "../models/Provider";
 import { verifyJwt } from "../middleware/auth";
+import { Request, Response } from 'express';
 
 const router = Router();
 
@@ -10,7 +11,7 @@ const MINIMUM_COMMISSION = 5; // Minimum $5 commission
 const MAXIMUM_COMMISSION = 100; // Maximum $100 commission
 
 // Add/Update payment method for provider
-router.post("/payment-method", verifyJwt, async (req, res) => {
+router.post("/payment-method", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -66,7 +67,7 @@ router.post("/payment-method", verifyJwt, async (req, res) => {
 });
 
 // Get payment methods
-router.get("/payment-methods", verifyJwt, async (req, res) => {
+router.get("/payment-methods", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -96,7 +97,7 @@ router.get("/payment-methods", verifyJwt, async (req, res) => {
 });
 
 // Calculate commission for a booking
-router.post("/calculate-commission", verifyJwt, async (req, res) => {
+router.post("/calculate-commission", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -129,7 +130,7 @@ router.post("/calculate-commission", verifyJwt, async (req, res) => {
 });
 
 // Process payment after work completion
-router.post("/process-payment", verifyJwt, async (req, res) => {
+router.post("/process-payment", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -185,7 +186,7 @@ router.post("/process-payment", verifyJwt, async (req, res) => {
 });
 
 // Request withdrawal
-router.post("/request-withdrawal", verifyJwt, async (req, res) => {
+router.post("/request-withdrawal", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -258,7 +259,7 @@ router.post("/request-withdrawal", verifyJwt, async (req, res) => {
 });
 
 // Get earnings summary
-router.get("/earnings-summary", verifyJwt, async (req, res) => {
+router.get("/earnings-summary", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });

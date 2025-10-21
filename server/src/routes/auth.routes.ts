@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { UserModel } from "../models/User";
 import { ProviderModel } from "../models/Provider";
 import { verifyJwt } from "../middleware/auth";
+import { Request, Response } from 'express';
 
 const router = Router();
 
@@ -43,7 +44,7 @@ function calculateTrustScore(providerData: any): number {
 }
 
 // User Registration
-router.post("/register", async (req, res) => {
+router.post("/register", async (req: Request, res: Response) => {
   try {
     const { name, email, password, role, ...additionalData } = req.body;
 
@@ -215,7 +216,7 @@ router.post("/register", async (req, res) => {
 });
 
 // Enhanced Provider Registration with step-by-step process
-router.post("/register/provider/step", async (req, res) => {
+router.post("/register/provider/step", async (req: Request, res: Response) => {
   try {
     const { step, data, userId } = req.body;
 
@@ -322,7 +323,7 @@ router.post("/register/provider/step", async (req, res) => {
 });
 
 // Complete Provider Registration
-router.post("/register/provider/complete", async (req, res) => {
+router.post("/register/provider/complete", async (req: Request, res: Response) => {
   try {
     const { userId } = req.body;
 
@@ -364,7 +365,7 @@ router.post("/register/provider/complete", async (req, res) => {
 });
 
 // User Login
-router.post("/login", async (req, res) => {
+router.post("/login", async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
 
@@ -413,7 +414,7 @@ router.post("/login", async (req, res) => {
 });
 
 // Refresh access token
-router.post("/refresh", async (req, res) => {
+router.post("/refresh", async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
@@ -443,7 +444,7 @@ router.post("/refresh", async (req, res) => {
 });
 
 // Get User Profile
-router.get("/profile", verifyJwt, async (req, res) => {
+router.get("/profile", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -470,7 +471,7 @@ router.get("/profile", verifyJwt, async (req, res) => {
 });
 
 // Update User Profile
-router.put("/profile", verifyJwt, async (req, res) => {
+router.put("/profile", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -511,7 +512,7 @@ router.put("/profile", verifyJwt, async (req, res) => {
 });
 
 // Change Password
-router.put("/change-password", verifyJwt, async (req, res) => {
+router.put("/change-password", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });
@@ -542,7 +543,7 @@ router.put("/change-password", verifyJwt, async (req, res) => {
 });
 
 // Forgot Password (placeholder for future implementation)
-router.post("/forgot-password", async (req, res) => {
+router.post("/forgot-password", async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
     
@@ -559,7 +560,7 @@ router.post("/forgot-password", async (req, res) => {
 });
 
 // Reset Password (placeholder for future implementation)
-router.post("/reset-password", async (req, res) => {
+router.post("/reset-password", async (req: Request, res: Response) => {
   try {
     const { token, newPassword } = req.body;
     
@@ -576,7 +577,7 @@ router.post("/reset-password", async (req, res) => {
 });
 
 // Logout (client-side token removal)
-router.post("/logout", verifyJwt, async (req, res) => {
+router.post("/logout", verifyJwt, async (req: Request, res: Response) => {
   try {
     if (!req.user) {
       return res.status(401).json({ message: "User not authenticated" });

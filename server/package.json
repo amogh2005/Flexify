@@ -27,15 +27,14 @@
     "stripe": "^18.4.0",
     "twilio": "^5.8.0",
     "uuid": "^11.1.0",
-    "zod": "^4.0.17"
-  },
-  "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/cors": "^2.8.19",
+    "zod": "^4.0.17",
+    "@types/node": "^24.9.1",
     "@types/express": "^5.0.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.0.0",
-    "@types/node": "^24.9.1",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.19"  },
+  "devDependencies": {
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.9.3"
