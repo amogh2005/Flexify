@@ -162,30 +162,36 @@ router.post("/register", async (req, res) => {
         await provider.save();
         
         console.log('Provider profile created successfully:', provider._id);
-      } catch (providerError) {
-        console.error('Error creating provider profile:', providerError);
-        console.error('Provider validation errors:', providerError.errors);
-        console.error('Provider data that failed:', JSON.stringify(providerData, null, 2));
-        // Fail the registration if provider creation fails
-        throw new Error(`Failed to create provider profile: ${providerError.message}`);
+      } catch (providerError: unknown) {
+        if (providerError instanceof Error) {
+          console.error('Error creating provider profile:', providerError);
+          // If Mongoose validation error, it may have an "errors" object
+          console.error('Provider validation errors:', (providerError as any).errors);
+          console.error('Provider data that failed:', JSON.stringify(providerData, null, 2));
+          throw new Error(`Failed to create provider profile: ${providerError.message}`);
+        } else {
+          console.error('Unknown provider error:', providerError);
+          throw new Error('Failed to create provider profile due to unknown error');
+        }
       }
     }
 
     // Generate JWT token
     const token = jwt.sign(
-      { userId: user._id.toString(), role: user.role },
+      { userId: (user._id as any).toString(), role: user.role },
       process.env.JWT_SECRET || "fallback_secret",
       { expiresIn: "7d" }
     );
+    
 
     // Issue tokens on registration
     const accessToken = jwt.sign(
-      { userId: user._id.toString(), role: user.role },
+      { userId: (user._id as string).toString(), role: user.role },
       process.env.JWT_SECRET || "fallback_secret",
       { expiresIn: "7d" }
     );
     const refreshToken = jwt.sign(
-      { userId: user._id.toString(), role: user.role },
+      { userId: (user._id as string).toString(), role: user.role },
       process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || "fallback_secret",
       { expiresIn: "30d" }
     );
@@ -376,13 +382,14 @@ router.post("/login", async (req, res) => {
 
     // Generate JWT token and refresh token
     const token = jwt.sign(
-      { userId: user._id.toString(), role: user.role },
+      { userId: (user._id as any).toString(), role: user.role },
       process.env.JWT_SECRET || "fallback_secret",
       { expiresIn: "7d" }
     );
+    
 
     const refreshToken = jwt.sign(
-      { userId: user._id.toString(), role: user.role },
+      { userId: (user._id as string).toString(), role: user.role },
       process.env.JWT_REFRESH_SECRET || process.env.JWT_SECRET || "fallback_secret",
       { expiresIn: "30d" }
     );

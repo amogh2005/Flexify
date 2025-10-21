@@ -226,7 +226,9 @@ router.get("/me", verifyJwt, requireRole("user"), async (req, res) => {
 		const { status, limit = 100 } = req.query;
 		
 		const match = { userId: req.user!.userId };
-		if (status) match.status = status;
+		// if (status) match.status = status;
+		if (status) (match as any).status = status;
+
 		
 		const docs = await BookingModel.find(match)
 			.populate('providerId', 'category description verified')
@@ -409,13 +411,20 @@ router.patch("/:id/start", verifyJwt, requireRole("provider"), async (req, res) 
 			{ path: 'providerId', select: 'category description' }
 		]);
 
-    await notifyBookingStatusChange(
-      booking.userId.toString(),
-      provider.userId.toString(),
-      { id: booking._id, serviceType: booking.serviceType, startedAt: updatedBooking.startedAt },
-      "started"
-    );
+    // await notifyBookingStatusChange(
+    //   booking.userId.toString(),
+    //   provider.userId.toString(),
+    //   { id: booking._id, serviceType: booking.serviceType, startedAt: updatedBooking.startedAt },
+    //   "started"
+    // );
 
+	await notifyBookingStatusChange(
+		booking.userId.toString(),
+		provider.userId.toString(),
+		{ id: booking._id, serviceType: booking.serviceType, startedAt: updatedBooking!.startedAt },
+		"started"
+	  );
+	  
 		return res.json(updatedBooking);
 	} catch (error) {
 		console.error('Error starting booking:', error);
@@ -458,12 +467,28 @@ router.patch("/:id/complete", verifyJwt, requireRole("provider"), async (req, re
 			{ path: 'providerId', select: 'category description' }
 		]);
 
-    await notifyBookingStatusChange(
-      booking.userId.toString(),
-      provider.userId.toString(),
-      { id: booking._id, serviceType: booking.serviceType, completedAt: updatedBooking.completedAt, finalAmount: updatedBooking.finalAmount },
-      "completed"
-    );
+    // await notifyBookingStatusChange(
+    //   booking.userId.toString(),
+    //   provider.userId.toString(),
+    //   { id: booking._id, serviceType: booking.serviceType, completedAt: updatedBooking.completedAt, finalAmount: updatedBooking.finalAmount },
+    //   "completed"
+    // );
+	if (!updatedBooking) {
+		throw new Error("Booking update failed: updatedBooking is null");
+	  }
+	  
+	  await notifyBookingStatusChange(
+		booking.userId.toString(),
+		provider.userId.toString(),
+		{
+		  id: booking._id,
+		  serviceType: booking.serviceType,
+		  completedAt: updatedBooking.completedAt,
+		  finalAmount: updatedBooking.finalAmount,
+		},
+		"completed"
+	  );
+	  
 
 		return res.json(updatedBooking);
 	} catch (error) {
@@ -570,13 +595,13 @@ router.get("/:id", verifyJwt, async (req, res) => {
 		
 		// Users can only see their own bookings, providers can only see bookings assigned to them
 		if (role === "user") {
-			match.userId = userId;
+			(match as any).userId = userId;
 		} else if (role === "provider") {
 			const provider = await ProviderModel.findOne({ userId });
 			if (!provider) {
 				return res.status(403).json({ error: "Provider profile not found" });
 			}
-			match.providerId = provider._id;
+			(match as any).providerId = provider._id;
 		}
 
 		const booking = await BookingModel.findOne(match).populate([
